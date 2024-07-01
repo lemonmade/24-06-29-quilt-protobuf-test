@@ -1,0 +1,33 @@
+{
+  "name": "24-06-29-quilt-router-test-workspace",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r run build",
+    "format": "prettier --write --cache .",
+    "lint": "prettier --check --cache .",
+    "test": "vitest",
+    "type-check": "tsc --build --pretty",
+    "typescript:run": "tsx --conditions quilt:source",
+    "typescript:watch": "tsx watch --conditions quilt:source"
+  },
+  "devDependencies": {
+    "@quilted/rollup": "^0.2.31",
+    "@quilted/typescript": "^0.3.1",
+    "@quilted/vite": "^0.1.22",
+    "prettier": "^3.0.0",
+    "rollup": "^4.14.0",
+    "tsx": "^4.9.0",
+    "typescript": "^5.5.0",
+    "vite": "^5.2.0",
+    "vitest": "^1.6.0"
+  },
+  "prettier": {
+    "arrowParens": "always",
+    "bracketSpacing": false,
+    "singleQuote": true,
+    "trailingComma": "all"
+  },
+  "packageManager": "pnpm@9.4.0+sha512.f549b8a52c9d2b8536762f99c0722205efc5af913e77835dbccc3b0b0b2ca9e7dc8022b78062c17291c48e88749c70ce88eb5a74f1fa8c4bf5e18bb46c8bd83a"
+}
