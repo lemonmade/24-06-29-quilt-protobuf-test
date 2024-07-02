@@ -48,7 +48,7 @@ export function App({context}: AppProps) {
   return (
     <AppContext context={context}>
       <HTML>
-        <Navigation routes={routes} context={context} />
+        <Navigation router={context.router} routes={routes} context={context} />
       </HTML>
     </AppContext>
   );

@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "@quilted/rollup": "^0.2.31",
-    "@quilted/typescript": "^0.3.1",
+    "@quilted/typescript": "^0.4.1",
     "@quilted/vite": "^0.1.22",
     "prettier": "^3.0.0",
     "rollup": "^4.14.0",

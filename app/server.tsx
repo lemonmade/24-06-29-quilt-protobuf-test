@@ -14,7 +14,7 @@ const assets = new BrowserAssets();
 // For all GET requests, render our React application.
 router.get(async (request) => {
   const context = {
-    router: new Router(),
+    router: new Router(request.url),
   } satisfies AppContext;
 
   const response = await renderToResponse(<App context={context} />, {
