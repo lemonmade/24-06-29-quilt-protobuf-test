@@ -2,119 +2,223 @@ import {
   useAsyncAction,
   AsyncAction,
   AsyncActionCache,
+  AsyncActionCacheEntry,
+  AsyncActionRunCache,
   AsyncActionCacheCreateOptions,
   AsyncActionCacheEntrySerialization,
 } from '@quilted/quilt/async';
+import type {ServiceType} from '@bufbuild/protobuf';
 
 import {useAppContext} from './context.ts';
-import type {Message} from '@bufbuild/protobuf';
 
 declare module './context.ts' {
   export interface AppContext {
-    readonly protobuf: ProtobufCache;
+    readonly protobuf: {
+      readonly fetch: ProtobufFetch;
+      readonly cache: ProtobufCache;
+    };
   }
 }
 
-export const useProtobufCache = () => useAppContext().protobuf;
+export interface ProtobufFetch {
+  <Service extends ServiceType, Method extends keyof Service['methods']>(
+    service: Service,
+    method: Method,
+    options: {readonly input?: InstanceType<Service['methods'][Method]['I']>},
+  ): Promise<InstanceType<Service['methods'][Method]['O']>>;
+}
 
-export function useProtobufFetch<T extends Message<any>>(
-  fetch: () => PromiseLike<T>,
+export function useProtobufService<
+  Service extends ServiceType,
+  Method extends string & keyof Service['methods'],
+>(
+  service: Service,
+  method: Method,
   {
-    type,
     key,
     tags,
+    input,
   }: AsyncActionCacheCreateOptions & {
-    type: typeof Message<T & {toBinary(): Uint8Array}> & {
-      fromBinary(bytes: Uint8Array): T;
-    };
-  },
+    readonly input?: InstanceType<Service['methods'][Method]['I']>;
+  } = {},
 ) {
-  const protobuf = useProtobufCache();
+  const {cache, fetch} = useAppContext().protobuf;
 
-  const action = protobuf.create(fetch, {
+  const action = cache.create<Service, Method>(service, method, {
     key,
     tags,
-    fromBytes: (bytes) => type.fromBinary(bytes),
-    toBytes: (value) => value.toBinary(),
+    fetch,
   });
 
-  return useAsyncAction(action);
+  return useAsyncAction(action, {input});
+}
+
+export class ProtobufServiceMethod<
+  Service extends ServiceType,
+  Method extends string & keyof Service['methods'],
+> extends AsyncAction<
+  InstanceType<Service['methods'][Method]['O']>,
+  InstanceType<Service['methods'][Method]['I']>
+> {
+  readonly service: ServiceType;
+  readonly method: string;
+
+  constructor(
+    service: ServiceType,
+    method: string,
+    {
+      fetch,
+      cached,
+    }: NoInfer<{
+      /**
+       * The function used to run the protobuf method.
+       */
+      fetch?: ProtobufFetch;
+
+      /**
+       * An optional cached result to use for this query.
+       */
+      cached?: AsyncActionRunCache<
+        InstanceType<Service['methods'][Method]['O']>,
+        InstanceType<Service['methods'][Method]['I']>
+      >;
+    }>,
+  ) {
+    super((input) => fetch!(service, method, {input: input as any}) as any, {
+      cached: cached && {
+        ...cached,
+        value:
+          cached.value && cached.value instanceof Uint8Array
+            ? (service.methods[method]?.O.fromBinary(cached.value) as any)
+            : cached.value,
+        input:
+          cached.input && cached.input instanceof Uint8Array
+            ? (service.methods[method]?.I.fromBinary(cached.input) as any)
+            : cached.input,
+      },
+    });
+    this.service = service;
+    this.method = method;
+  }
+
+  serialize() {
+    const serialized = super.serialize();
+    if (serialized == null) return serialized;
+
+    return {
+      ...serialized,
+      input: serialized.input?.toBinary(),
+      value: serialized.value?.toBinary(),
+    } as any as AsyncActionRunCache<
+      InstanceType<Service['methods'][Method]['O']>,
+      InstanceType<Service['methods'][Method]['I']>
+    >;
+  }
 }
 
 export class ProtobufCache {
-  #cache = new AsyncActionCache();
+  readonly #fetch?: ProtobufFetch;
+  readonly #cache: AsyncActionCache;
 
-  create<T>(
-    fetch: () => PromiseLike<T>,
+  constructor({
+    fetch,
+    initial,
+  }: {
+    fetch?: ProtobufFetch;
+    initial?: Iterable<AsyncActionCacheEntrySerialization<any>>;
+  } = {}) {
+    this.#fetch = fetch;
+    this.#cache = new AsyncActionCache(initial);
+  }
+
+  run = <
+    Service extends ServiceType,
+    Method extends string & keyof Service['methods'],
+  >(
+    service: Service,
+    method: Method,
     {
-      fromBytes,
-      toBytes,
-      key,
+      key = `${service.typeName}/${method as string}`,
       tags,
+      input,
+      force,
+      signal,
+      fetch: explicitFetch,
     }: AsyncActionCacheCreateOptions & {
-      fromBytes: (bytes: Uint8Array) => NoInfer<T>;
-      toBytes: (value: NoInfer<T>) => Uint8Array;
-    },
-  ) {
-    return this.#cache.create(
-      (cached) => {
-        let action: AsyncAction<T>;
-
-        if (cached) {
-          action = new AsyncAction<T>(fetch, {
-            cached: cached.value
-              ? {...cached, value: fromBytes(cached.value)}
-              : cached,
-          });
-        } else {
-          action = new AsyncAction<T>(fetch);
-        }
-
-        Object.assign(action, {toBytes});
-
-        return action;
-      },
+      readonly fetch?: ProtobufFetch;
+      readonly input?: InstanceType<Service['methods'][Method]['I']>;
+      readonly signal?: AbortSignal;
+      readonly force?: boolean;
+    } = {},
+  ) => {
+    const entry = this.#cache.create(
+      (cached) =>
+        new ProtobufServiceMethod<Service, Method>(service, method, {
+          cached,
+          fetch: explicitFetch ?? this.#fetch,
+        }),
       {key, tags},
     );
+
+    return entry.run(input, {signal, force});
+  };
+
+  fetch = this.run;
+
+  create = <
+    Service extends ServiceType,
+    Method extends string & keyof Service['methods'],
+  >(
+    service: Service,
+    method: Method,
+    {
+      key = `${service.typeName}/${method as string}`,
+      tags,
+      fetch: explicitFetch,
+      cached: explicitCached,
+    }: NoInfer<
+      {
+        readonly fetch?: ProtobufFetch;
+        readonly cached?: AsyncActionRunCache<
+          InstanceType<Service['methods'][Method]['O']>,
+          InstanceType<Service['methods'][Method]['I']>
+        >;
+      } & AsyncActionCacheCreateOptions
+    > = {},
+  ): AsyncActionCacheEntry<ProtobufServiceMethod<Service, Method>> => {
+    const entry = this.#cache.create(
+      (cached) =>
+        new ProtobufServiceMethod<Service, Method>(service, method, {
+          cached: explicitCached ?? cached,
+          fetch: explicitFetch ?? this.#fetch,
+        }),
+      {key, tags},
+    );
+
+    return entry;
+  };
+
+  clear() {
+    this.#cache.clear();
+  }
+
+  *keys() {
+    yield* this.#cache.keys();
+  }
+
+  *values() {
+    yield* this.#cache.values();
+  }
+
+  *entries() {
+    yield* this.#cache.entries();
   }
 
   restore(entries: Iterable<AsyncActionCacheEntrySerialization<any>>) {
-    const encoder = new TextEncoder();
-
-    this.#cache.restore(
-      [...entries].map(
-        ([key, entry]) =>
-          [
-            key,
-            entry.value
-              ? {...entry, value: encoder.encode(entry.value)}
-              : entry,
-          ] as const,
-      ),
-    );
+    this.#cache.restore(entries);
   }
 
   serialize(): readonly AsyncActionCacheEntrySerialization<any>[] {
-    const decoder = new TextDecoder();
-
-    const entries: AsyncActionCacheEntrySerialization<any>[] = [];
-
-    for (const entry of this.#cache.values()) {
-      const latest = entry.latest?.serialize();
-
-      if (latest == null) continue;
-
-      entries.push([
-        entry.id,
-        {
-          ...latest,
-          value: latest.value
-            ? decoder.decode((entry as any).toBytes(entry.value))
-            : undefined,
-        } as typeof latest,
-      ]);
-    }
-
-    return entries;
+    return this.#cache.serialize();
   }
 }

@@ -10,7 +10,7 @@
     "start": "node ./build/server/server.js"
   },
   "devDependencies": {
-    "@quilted/quilt": "^0.7.6",
+    "@quilted/quilt": "^0.7.7",
     "jsdom": "^24.0.0",
     "preact": "^10.21.0",
     "react": "npm:@quilted/react@^18.2.0",

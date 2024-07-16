@@ -15,7 +15,7 @@ import {
   type AppContext as AppContextType,
 } from './shared/context.ts';
 
-import {HomeMessage} from './proto/app_pb.ts';
+import {HomeService} from './proto/home_connect.ts';
 import {useAsyncActionCacheSerialization} from '@quilted/quilt/async';
 
 export interface AppProps {
@@ -30,20 +30,9 @@ const routes = [
     children: [
       route('/', {
         async load(_, context: AppContextType) {
-          const action = context.protobuf.create(
-            async () => {
-              return new HomeMessage({greeting: 'Hello, world!'});
-            },
-            {
-              toBytes: (value) => value.toBinary(),
-              fromBytes: (bytes) => HomeMessage.fromBinary(bytes),
-              key: '/',
-            },
-          );
+          const action = context.protobuf.cache.create(HomeService, 'query');
 
-          await action.run();
-
-          await Promise.all([Home.load()]);
+          await Promise.all([Home.load(), action.run()]);
         },
         render: <Home />,
       }),
@@ -75,7 +64,7 @@ export default App;
 // This component renders any app-wide context.
 function AppContext({children, context}: RenderableProps<AppProps>) {
   const locale = useLocaleFromEnvironment() ?? 'en';
-  useAsyncActionCacheSerialization(context.protobuf, {name: 'proto'});
+  useAsyncActionCacheSerialization(context.protobuf.cache, {name: 'proto'});
 
   return (
     <AppContextReact.Provider value={context}>

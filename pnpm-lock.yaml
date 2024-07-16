@@ -17,12 +17,21 @@ importers:
       '@bufbuild/protoc-gen-es':
         specifier: ^1.10.0
         version: 1.10.0(@bufbuild/protobuf@1.10.0)
+      '@connectrpc/connect':
+        specifier: ^1.4.0
+        version: 1.4.0(@bufbuild/protobuf@1.10.0)
+      '@connectrpc/connect-web':
+        specifier: ^1.4.0
+        version: 1.4.0(@bufbuild/protobuf@1.10.0)(@connectrpc/connect@1.4.0(@bufbuild/protobuf@1.10.0))
       '@connectrpc/protoc-gen-connect-es':
         specifier: ^1.4.0
-        version: 1.4.0(@bufbuild/protoc-gen-es@1.10.0(@bufbuild/protobuf@1.10.0))
+        version: 1.4.0(@bufbuild/protoc-gen-es@1.10.0(@bufbuild/protobuf@1.10.0))(@connectrpc/connect@1.4.0(@bufbuild/protobuf@1.10.0))
+      '@protobuf-ts/plugin':
+        specifier: ^2.9.4
+        version: 2.9.4
       '@quilted/rollup':
-        specifier: ^0.2.31
-        version: 0.2.31(@babel/template@7.24.7)(@babel/traverse@7.24.7)(@babel/types@7.24.7)(rollup@4.18.0)
+        specifier: ^0.2.33
+        version: 0.2.33(@babel/template@7.24.7)(@babel/traverse@7.24.7)(@babel/types@7.24.7)(rollup@4.18.0)
       '@quilted/typescript':
         specifier: ^0.4.1
         version: 0.4.1
@@ -57,8 +66,8 @@ importers:
   app:
     devDependencies:
       '@quilted/quilt':
-        specifier: ^0.7.6
-        version: 0.7.6(@preact/signals-core@1.6.1)(@quilted/react@18.2.11)(graphql@16.9.0)(preact@10.22.0)(prettier@3.3.2)(vitest@1.6.0(@types/node@20.14.9)(jsdom@24.1.0)(lightningcss@1.25.1))
+        specifier: ^0.7.7
+        version: 0.7.7(@preact/signals-core@1.6.1)(@quilted/react@18.2.11)(graphql@16.9.0)(preact@10.22.0)(prettier@3.3.2)(vitest@1.6.0(@types/node@20.14.9)(jsdom@24.1.0)(lightningcss@1.25.1))
       jsdom:
         specifier: ^24.0.0
         version: 24.1.0
@@ -783,6 +792,17 @@ packages:
   '@bufbuild/protoplugin@1.10.0':
     resolution: {integrity: sha512-u6NE4vL0lw1+EK4/PiE/SQB7fKO4LRJNTEScIXVOi2x88K/c8WKc/k0KyEaA0asVBMpwekJQZGnRyj04ZtN5Gg==}
 
+  '@connectrpc/connect-web@1.4.0':
+    resolution: {integrity: sha512-13aO4psFbbm7rdOFGV0De2Za64DY/acMspgloDlcOKzLPPs0yZkhp1OOzAQeiAIr7BM/VOHIA3p8mF0inxCYTA==}
+    peerDependencies:
+      '@bufbuild/protobuf': ^1.4.2
+      '@connectrpc/connect': 1.4.0
+
+  '@connectrpc/connect@1.4.0':
+    resolution: {integrity: sha512-vZeOkKaAjyV4+RH3+rJZIfDFJAfr+7fyYr6sLDKbYX3uuTVszhFe9/YKf5DNqrDb5cKdKVlYkGn6DTDqMitAnA==}
+    peerDependencies:
+      '@bufbuild/protobuf': ^1.4.2
+
   '@connectrpc/protoc-gen-connect-es@1.4.0':
     resolution: {integrity: sha512-/7vQ8Q7mEBhV8qEVh/eifRQlQnf8EJ6weMwCD2DljVAQRlZYcW9SLxjYZhV1uM1ZZqQC7Cw2vvgXRg2XQswHBg==}
     engines: {node: '>=16.0.0'}
@@ -996,6 +1016,23 @@ packages:
       preact: ^10.4.0
       vite: '>=2.0.0'
 
+  '@protobuf-ts/plugin-framework@2.9.4':
+    resolution: {integrity: sha512-9nuX1kjdMliv+Pes8dQCKyVhjKgNNfwxVHg+tx3fLXSfZZRcUHMc1PMwB9/vTvc6gBKt9QGz5ERqSqZc0++E9A==}
+
+  '@protobuf-ts/plugin@2.9.4':
+    resolution: {integrity: sha512-Db5Laq5T3mc6ERZvhIhkj1rn57/p8gbWiCKxQWbZBBl20wMuqKoHbRw4tuD7FyXi+IkwTToaNVXymv5CY3E8Rw==}
+    hasBin: true
+
+  '@protobuf-ts/protoc@2.9.4':
+    resolution: {integrity: sha512-hQX+nOhFtrA+YdAXsXEDrLoGJqXHpgv4+BueYF0S9hy/Jq0VRTVlJS1Etmf4qlMt/WdigEes5LOd/LDzui4GIQ==}
+    hasBin: true
+
+  '@protobuf-ts/runtime-rpc@2.9.4':
+    resolution: {integrity: sha512-y9L9JgnZxXFqH5vD4d7j9duWvIJ7AShyBRoNKJGhu9Q27qIbchfzli66H9RvrQNIFk5ER7z1Twe059WZGqERcA==}
+
+  '@protobuf-ts/runtime@2.9.4':
+    resolution: {integrity: sha512-vHRFWtJJB/SiogWDF0ypoKfRIZ41Kq+G9cEFj6Qm1eQaAhJ1LDFvgZ7Ja4tb3iLOQhz0PaoPnnOijF1qmEqTxg==}
+
   '@protobufjs/aspromise@1.1.2':
     resolution: {integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ==}
 
@@ -1030,8 +1067,8 @@ packages:
     resolution: {integrity: sha512-vdWmoM6ONaeLBwYJdBJXCzsGr7hSc1gdWP57NVuC7qMibLmOwsej1MzyJbIRWv3QlQ9nssT4V4xIC8Wc7atiag==}
     engines: {node: '>=14.0.0'}
 
-  '@quilted/async@0.4.17':
-    resolution: {integrity: sha512-tmtV81nNMdyg37Pcp6H3ST6TdYu0LwzFBKecaq7hyxoAZUX19RFM1bFoIC+h0kN/sljwdTQygDVR71JP8UhLhA==}
+  '@quilted/async@0.4.18':
+    resolution: {integrity: sha512-RJVtLNAa4wSeBlGRYYWs5LD3A8ZiJ+f7WsNxfx2oAk8o1FzlP+ro9vL0ZPvkTytfbI00ewVsC5RUVP/IiD7NmQ==}
 
   '@quilted/babel@0.2.2':
     resolution: {integrity: sha512-lSQnlro13dhU7gZtgk0810CSRBxsbhB2ryh8mPnfVlo6NEJaX6EFmcA7/nwEHQDuICR1FVMRLOsBfi5IkS8I8A==}
@@ -1048,16 +1085,16 @@ packages:
       '@babel/types':
         optional: true
 
-  '@quilted/browser@0.1.0':
-    resolution: {integrity: sha512-bq2DhgbwmpqQd3swrxcE6V+Uk2KKC4mZT5MZTA2QrHn1qXZC/k7AsdVBrbmabu/oYOugq0Bd0uweK5Ia06w6gA==}
+  '@quilted/browser@0.1.1':
+    resolution: {integrity: sha512-lu99CzI8x3miMRh/JP2cOKQTgiZbAI4H3giHmXnjt4hofnQdPJc/oTTbb1BhPzJYwsloUMj0M56xMAsjRzJyHw==}
     engines: {node: '>=18.0.0'}
 
   '@quilted/events@2.0.0':
     resolution: {integrity: sha512-0Q5w7jgHPj3nD8sTh1o7oa7LFxATK+dH0i4p8Y6BgKBLDOkr9/m01IDUXsbZdZ98XvxQaVkxBF/HUNAFfg/KfA==}
     engines: {node: '>=14.0.0'}
 
-  '@quilted/graphql@3.3.2':
-    resolution: {integrity: sha512-CngS/wKlVIjB0iWMAV6toSrBr32A0+B5kpiebv8BhsAvN716u99so/wi9aCaygRYzga6A4H/F1W+Pt8+Ap8aHQ==}
+  '@quilted/graphql@3.3.3':
+    resolution: {integrity: sha512-1rh+gxh4eb+lD40I01+BczPRfsCh+Tns0pLNWLl7wwF2lbk+SxC384g7k2AUNikty/dKCSxyIKu2twYXeE9fww==}
 
   '@quilted/http@0.3.0':
     resolution: {integrity: sha512-60CNw2V/WJjEsShHaSSGEfNsa3yAGfZYsUACgdPpR0Pypd9PUF1doUhTvTyY09A0nJ/9WxEHWoDV6p2YFGtu2w==}
@@ -1128,8 +1165,8 @@ packages:
       preact:
         optional: true
 
-  '@quilted/preact-router@0.2.2':
-    resolution: {integrity: sha512-RfUvkhmZjtYlAqsT03SDAfpTK1tsSxQU6hoK5OYLrjXyG6HcSaQGJb5agikcDb5NiAMgtvVL44Iz//tu8N49Tg==}
+  '@quilted/preact-router@0.2.3':
+    resolution: {integrity: sha512-kgRbplw9Cj7nPx0d8LasUJE2IDFN5iLpigMUCIsz1kKM9zShbrXH33kV7HdFmZhUcr0Cag3tTc8baIxPhls77A==}
     peerDependencies:
       preact: ^10.21.0
     peerDependenciesMeta:
@@ -1161,8 +1198,8 @@ packages:
       preact:
         optional: true
 
-  '@quilted/quilt@0.7.6':
-    resolution: {integrity: sha512-63eBRrtBA1arWlz0YNzSHQ45JD5MANz2s3RdEJLTzwvyBg6+Ef7LccM3nhDcTVM/eB+4x8vCey2B3TE90qFfBQ==}
+  '@quilted/quilt@0.7.7':
+    resolution: {integrity: sha512-jZdAICGWdyI3x9yeL72dahQXa6yYVjHl0eP7vl9vuElGytsWIeogU0nLUpGQUTpJgiEmPahcC0KJW/Mv9zuHag==}
     peerDependencies:
       graphql: ^16.8.0
       preact: ^10.21.0
@@ -1188,21 +1225,21 @@ packages:
   '@quilted/request-router@0.3.0':
     resolution: {integrity: sha512-quEStEmTLDEC3Ps/fRbG1Sr+ybdUudsqS6SJmo2O/VzT2I251wKScAEvgUHIy13sbikLcqyXdx/NZ2lns6qMdg==}
 
-  '@quilted/rollup@0.2.31':
-    resolution: {integrity: sha512-wYlM1H5uriMInqCtD/GMdV4V87S0mYEotigu6I4or2XB9Tc2+0rXMF0hUyWbAazZs8omTEU1LPaU9gXzE2RkqA==}
+  '@quilted/rollup@0.2.33':
+    resolution: {integrity: sha512-NXHgX8trqNN1tQHXVdltSUUQtkgNSHTI2Gtq6ddi9hpXkkwaqH+MBfzMAPj9tiXydVYsvMdqWS5tq/5IC8S3Ug==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^4.0.0
 
-  '@quilted/routing@0.4.0':
-    resolution: {integrity: sha512-L+VrhMVDcA6ZymmtDdzPKujuJAVTCIXkg3g1AtiiaiMtUNK4yOHLhseYo7S/vk361DcYv59BLYNVGMSbrmy7BQ==}
+  '@quilted/routing@0.4.1':
+    resolution: {integrity: sha512-CeWDTGd2VrdRauzsIPWyAWY6BCfvklNjQs1FG8d4yXc1DoyBCK2qC8YrQOqEjQPyMwc+67tGdcjbATPiN7zHug==}
 
   '@quilted/signals@0.2.2':
     resolution: {integrity: sha512-iGWkDiDpR2xq0FmAF/ix/cz1qUtz2USp+8kam/QnHe0i50uKCBkufv/QHv0QhhB2/eKbHwa8wxKwslCKdiyS2w==}
     engines: {node: '>=14.0.0'}
 
-  '@quilted/threads@2.2.0':
-    resolution: {integrity: sha512-1STcdYtWyVrRs2hfA0CYFvtjl2LA8uVJrJGwsYDbuC2WNyjvRrqgB6IHVuzt3rhapXLeo2AjIfM9V2wVcdhByQ==}
+  '@quilted/threads@2.4.0':
+    resolution: {integrity: sha512-YIjgV+kLsssruF9+ymzTS3HKmzt6YS1k3LSxhl24+KAyTEFQdzHjPO6PKhlrp1LR8dEtPGn9plqhK4A7eKWqSw==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       '@preact/signals-core': ^1.6.0
@@ -2527,6 +2564,11 @@ packages:
     resolution: {integrity: sha512-0fr/mIH1dlO+x7TlcMy+bIDqKPsw/70tVyeHW787goQjhmqaZe10uwLujubK9q9Lg6Fiho1KUKDYz0Z7k7g5/g==}
     engines: {node: '>=4'}
 
+  typescript@3.9.10:
+    resolution: {integrity: sha512-w6fIxVE/H1PkLKcCPsFqKE7Kv7QUwhU8qQY2MueZXWx5cPZdwFupLgKK3vntcK98BtNHZtAF4LA/yl2a7k8R6Q==}
+    engines: {node: '>=4.2.0'}
+    hasBin: true
+
   typescript@4.5.2:
     resolution: {integrity: sha512-5BlMof9H1yGt0P8/WF+wPNw6GfctgGjXp5hkblpyT+8rkASSmkUKMXrxR0Xg8ThVCi/JnHQiKXeBaEwCeQwMFw==}
     engines: {node: '>=4.2.0'}
@@ -3652,12 +3694,22 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@connectrpc/protoc-gen-connect-es@1.4.0(@bufbuild/protoc-gen-es@1.10.0(@bufbuild/protobuf@1.10.0))':
+  '@connectrpc/connect-web@1.4.0(@bufbuild/protobuf@1.10.0)(@connectrpc/connect@1.4.0(@bufbuild/protobuf@1.10.0))':
+    dependencies:
+      '@bufbuild/protobuf': 1.10.0
+      '@connectrpc/connect': 1.4.0(@bufbuild/protobuf@1.10.0)
+
+  '@connectrpc/connect@1.4.0(@bufbuild/protobuf@1.10.0)':
+    dependencies:
+      '@bufbuild/protobuf': 1.10.0
+
+  '@connectrpc/protoc-gen-connect-es@1.4.0(@bufbuild/protoc-gen-es@1.10.0(@bufbuild/protobuf@1.10.0))(@connectrpc/connect@1.4.0(@bufbuild/protobuf@1.10.0))':
     dependencies:
       '@bufbuild/protobuf': 1.10.0
       '@bufbuild/protoplugin': 1.10.0
     optionalDependencies:
       '@bufbuild/protoc-gen-es': 1.10.0(@bufbuild/protobuf@1.10.0)
+      '@connectrpc/connect': 1.4.0(@bufbuild/protobuf@1.10.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -3796,6 +3848,27 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@protobuf-ts/plugin-framework@2.9.4':
+    dependencies:
+      '@protobuf-ts/runtime': 2.9.4
+      typescript: 3.9.10
+
+  '@protobuf-ts/plugin@2.9.4':
+    dependencies:
+      '@protobuf-ts/plugin-framework': 2.9.4
+      '@protobuf-ts/protoc': 2.9.4
+      '@protobuf-ts/runtime': 2.9.4
+      '@protobuf-ts/runtime-rpc': 2.9.4
+      typescript: 3.9.10
+
+  '@protobuf-ts/protoc@2.9.4': {}
+
+  '@protobuf-ts/runtime-rpc@2.9.4':
+    dependencies:
+      '@protobuf-ts/runtime': 2.9.4
+
+  '@protobuf-ts/runtime@2.9.4': {}
+
   '@protobufjs/aspromise@1.1.2': {}
 
   '@protobufjs/base64@1.1.2': {}
@@ -3821,7 +3894,7 @@ snapshots:
 
   '@quilted/assets@0.1.2': {}
 
-  '@quilted/async@0.4.17':
+  '@quilted/async@0.4.18':
     dependencies:
       '@quilted/assets': 0.1.2
       '@quilted/events': 2.0.0
@@ -3836,7 +3909,7 @@ snapshots:
       '@babel/traverse': 7.24.7
       '@babel/types': 7.24.7
 
-  '@quilted/browser@0.1.0':
+  '@quilted/browser@0.1.1':
     dependencies:
       '@quilted/assets': 0.1.2
       '@quilted/signals': 0.2.2
@@ -3844,9 +3917,9 @@ snapshots:
 
   '@quilted/events@2.0.0': {}
 
-  '@quilted/graphql@3.3.2':
+  '@quilted/graphql@3.3.3':
     dependencies:
-      '@quilted/async': 0.4.17
+      '@quilted/async': 0.4.18
       '@types/chance': 1.1.6
       chance: 1.1.11
       graphql: 16.9.0
@@ -3863,7 +3936,7 @@ snapshots:
 
   '@quilted/preact-async@0.1.14(preact@10.22.0)':
     dependencies:
-      '@quilted/async': 0.4.17
+      '@quilted/async': 0.4.18
       '@quilted/preact-browser': 0.1.7(preact@10.22.0)
       '@quilted/preact-context': 0.1.2(preact@10.22.0)
       '@quilted/preact-signals': 0.1.0(preact@10.22.0)
@@ -3873,7 +3946,7 @@ snapshots:
   '@quilted/preact-browser@0.1.7(preact@10.22.0)':
     dependencies:
       '@quilted/assets': 0.1.2
-      '@quilted/browser': 0.1.0
+      '@quilted/browser': 0.1.1
       '@quilted/http': 0.3.0
       '@quilted/preact-context': 0.1.2(preact@10.22.0)
       '@quilted/signals': 0.2.2
@@ -3886,7 +3959,7 @@ snapshots:
 
   '@quilted/preact-graphql@0.1.4(preact@10.22.0)':
     dependencies:
-      '@quilted/graphql': 3.3.2
+      '@quilted/graphql': 3.3.3
       '@quilted/preact-async': 0.1.14(preact@10.22.0)
       '@quilted/preact-context': 0.1.2(preact@10.22.0)
       '@quilted/preact-signals': 0.1.0(preact@10.22.0)
@@ -3899,7 +3972,7 @@ snapshots:
       '@quilted/localize': 0.2.1
       '@quilted/preact-browser': 0.1.7(preact@10.22.0)
       '@quilted/preact-context': 0.1.2(preact@10.22.0)
-      '@quilted/preact-router': 0.2.2(@quilted/react@18.2.11)(preact@10.22.0)
+      '@quilted/preact-router': 0.2.3(@quilted/react@18.2.11)(preact@10.22.0)
     optionalDependencies:
       '@quilted/request-router': 0.3.0
       preact: 10.22.0
@@ -3915,15 +3988,15 @@ snapshots:
     transitivePeerDependencies:
       - react
 
-  '@quilted/preact-router@0.2.2(@quilted/react@18.2.11)(preact@10.22.0)':
+  '@quilted/preact-router@0.2.3(@quilted/react@18.2.11)(preact@10.22.0)':
     dependencies:
-      '@quilted/async': 0.4.17
+      '@quilted/async': 0.4.18
       '@quilted/http': 0.3.0
       '@quilted/preact-async': 0.1.14(preact@10.22.0)
       '@quilted/preact-browser': 0.1.7(preact@10.22.0)
       '@quilted/preact-context': 0.1.2(preact@10.22.0)
       '@quilted/preact-performance': 0.1.0(@quilted/react@18.2.11)(preact@10.22.0)
-      '@quilted/routing': 0.4.0
+      '@quilted/routing': 0.4.1
       '@quilted/signals': 0.2.2
     optionalDependencies:
       preact: 10.22.0
@@ -3951,19 +4024,19 @@ snapshots:
     transitivePeerDependencies:
       - '@preact/signals-core'
 
-  '@quilted/quilt@0.7.6(@preact/signals-core@1.6.1)(@quilted/react@18.2.11)(graphql@16.9.0)(preact@10.22.0)(prettier@3.3.2)(vitest@1.6.0(@types/node@20.14.9)(jsdom@24.1.0)(lightningcss@1.25.1))':
+  '@quilted/quilt@0.7.7(@preact/signals-core@1.6.1)(@quilted/react@18.2.11)(graphql@16.9.0)(preact@10.22.0)(prettier@3.3.2)(vitest@1.6.0(@types/node@20.14.9)(jsdom@24.1.0)(lightningcss@1.25.1))':
     dependencies:
       '@quilted/assets': 0.1.2
-      '@quilted/async': 0.4.17
+      '@quilted/async': 0.4.18
       '@quilted/events': 2.0.0
-      '@quilted/graphql': 3.3.2
+      '@quilted/graphql': 3.3.3
       '@quilted/preact-async': 0.1.14(preact@10.22.0)
       '@quilted/preact-browser': 0.1.7(preact@10.22.0)
       '@quilted/preact-context': 0.1.2(preact@10.22.0)
       '@quilted/preact-graphql': 0.1.4(preact@10.22.0)
       '@quilted/preact-localize': 0.3.0(@quilted/react@18.2.11)(@quilted/request-router@0.3.0)(preact@10.22.0)
       '@quilted/preact-performance': 0.1.0(@quilted/react@18.2.11)(preact@10.22.0)
-      '@quilted/preact-router': 0.2.2(@quilted/react@18.2.11)(preact@10.22.0)
+      '@quilted/preact-router': 0.2.3(@quilted/react@18.2.11)(preact@10.22.0)
       '@quilted/preact-signals': 0.1.0(preact@10.22.0)
       '@quilted/preact-testing': 0.1.7(preact@10.22.0)
       '@quilted/preact-workers': 0.1.0(@preact/signals-core@1.6.1)(preact@10.22.0)
@@ -3971,7 +4044,7 @@ snapshots:
       '@quilted/react-dom': 18.2.14
       '@quilted/request-router': 0.3.0
       '@quilted/signals': 0.2.2
-      '@quilted/threads': 2.2.0(@preact/signals-core@1.6.1)
+      '@quilted/threads': 2.4.0(@preact/signals-core@1.6.1)
       jest-matcher-utils: 29.7.0
       preact-render-to-string: 6.5.5(preact@10.22.0)
     optionalDependencies:
@@ -3998,12 +4071,12 @@ snapshots:
   '@quilted/request-router@0.3.0':
     dependencies:
       '@quilted/http': 0.3.0
-      '@quilted/routing': 0.4.0
+      '@quilted/routing': 0.4.1
       send: 0.17.2
     transitivePeerDependencies:
       - supports-color
 
-  '@quilted/rollup@0.2.31(@babel/template@7.24.7)(@babel/traverse@7.24.7)(@babel/types@7.24.7)(rollup@4.18.0)':
+  '@quilted/rollup@0.2.33(@babel/template@7.24.7)(@babel/traverse@7.24.7)(@babel/types@7.24.7)(rollup@4.18.0)':
     dependencies:
       '@babel/core': 7.24.7
       '@babel/plugin-proposal-decorators': 7.24.7(@babel/core@7.24.7)
@@ -4015,7 +4088,7 @@ snapshots:
       '@mdn/browser-compat-data': 5.5.35
       '@quilted/assets': 0.1.2
       '@quilted/babel': 0.2.2(@babel/core@7.24.7)(@babel/template@7.24.7)(@babel/traverse@7.24.7)(@babel/types@7.24.7)
-      '@quilted/graphql': 3.3.2
+      '@quilted/graphql': 3.3.3
       '@rollup/plugin-alias': 5.1.0(rollup@4.18.0)
       '@rollup/plugin-babel': 6.0.4(@babel/core@7.24.7)(rollup@4.18.0)
       '@rollup/plugin-commonjs': 25.0.8(rollup@4.18.0)
@@ -4046,14 +4119,14 @@ snapshots:
       - '@types/babel__core'
       - supports-color
 
-  '@quilted/routing@0.4.0': {}
+  '@quilted/routing@0.4.1': {}
 
   '@quilted/signals@0.2.2':
     dependencies:
       '@preact/signals-core': 1.6.1
       '@quilted/events': 2.0.0
 
-  '@quilted/threads@2.2.0(@preact/signals-core@1.6.1)':
+  '@quilted/threads@2.4.0(@preact/signals-core@1.6.1)':
     dependencies:
       '@quilted/events': 2.0.0
     optionalDependencies:
@@ -4069,7 +4142,7 @@ snapshots:
       '@prefresh/vite': 2.4.6(preact@10.22.0)(vite@5.3.2(@types/node@20.14.9)(lightningcss@1.25.1))
       '@quilted/babel': 0.2.2(@babel/core@7.24.7)(@babel/template@7.24.7)(@babel/traverse@7.24.7)(@babel/types@7.24.7)
       '@quilted/request-router': 0.3.0
-      '@quilted/rollup': 0.2.31(@babel/template@7.24.7)(@babel/traverse@7.24.7)(@babel/types@7.24.7)(rollup@4.18.0)
+      '@quilted/rollup': 0.2.33(@babel/template@7.24.7)(@babel/traverse@7.24.7)(@babel/types@7.24.7)(rollup@4.18.0)
     optionalDependencies:
       vite: 5.3.2(@types/node@20.14.9)(lightningcss@1.25.1)
       vitest: 1.6.0(@types/node@20.14.9)(jsdom@24.1.0)(lightningcss@1.25.1)
@@ -4084,7 +4157,7 @@ snapshots:
 
   '@quilted/workers@0.4.3(@preact/signals-core@1.6.1)':
     dependencies:
-      '@quilted/threads': 2.2.0(@preact/signals-core@1.6.1)
+      '@quilted/threads': 2.4.0(@preact/signals-core@1.6.1)
     transitivePeerDependencies:
       - '@preact/signals-core'
 
@@ -5327,6 +5400,8 @@ snapshots:
       prelude-ls: 1.1.2
 
   type-detect@4.0.8: {}
+
+  typescript@3.9.10: {}
 
   typescript@4.5.2: {}
 
