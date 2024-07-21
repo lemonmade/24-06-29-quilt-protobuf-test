@@ -9,6 +9,7 @@
     "lint": "prettier --check --cache .",
     "test": "vitest",
     "type-check": "tsc --build --pretty",
+    "protobuf:generate": "buf generate proto",
     "typescript:run": "tsx --conditions quilt:source",
     "typescript:watch": "tsx watch --conditions quilt:source"
   },

@@ -7,6 +7,7 @@ import {
   AsyncActionCacheCreateOptions,
   AsyncActionCacheEntrySerialization,
 } from '@quilted/quilt/async';
+import {type ReadonlySignal} from '@quilted/quilt/signals';
 import type {ServiceType} from '@bufbuild/protobuf';
 
 import {useAppContext} from './context.ts';
@@ -24,7 +25,11 @@ export interface ProtobufFetch {
   <Service extends ServiceType, Method extends keyof Service['methods']>(
     service: Service,
     method: Method,
-    options: {readonly input?: InstanceType<Service['methods'][Method]['I']>},
+    options: {
+      readonly input?:
+        | InstanceType<Service['methods'][Method]['I']>
+        | ReadonlySignal<InstanceType<Service['methods'][Method]['I']>>;
+    },
   ): Promise<InstanceType<Service['methods'][Method]['O']>>;
 }
 
