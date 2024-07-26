@@ -7,8 +7,8 @@ import {
   AsyncActionCacheCreateOptions,
   AsyncActionCacheEntrySerialization,
 } from '@quilted/quilt/async';
-import {type ReadonlySignal} from '@quilted/quilt/signals';
-import type {ServiceType} from '@bufbuild/protobuf';
+import type {ReadonlySignal} from '@quilted/quilt/signals';
+import type {ServiceType, MethodInfo} from '@bufbuild/protobuf';
 
 import {useAppContext} from './context.ts';
 
@@ -22,18 +22,18 @@ declare module './context.ts' {
 }
 
 export interface ProtobufFetch {
-  <Service extends ServiceType, Method extends keyof Service['methods']>(
+  <Service extends ServiceType, Method extends MethodInfo>(
     service: Service,
     method: Method,
     options: {
       readonly input?:
-        | InstanceType<Service['methods'][Method]['I']>
-        | ReadonlySignal<InstanceType<Service['methods'][Method]['I']>>;
+        | InstanceType<Method['I']>
+        | ReadonlySignal<InstanceType<Method['I']>>;
     },
-  ): Promise<InstanceType<Service['methods'][Method]['O']>>;
+  ): Promise<InstanceType<Method['O']>>;
 }
 
-export function useProtobufService<
+export function useProtobufMethod<
   Service extends ServiceType,
   Method extends string & keyof Service['methods'],
 >(
@@ -44,33 +44,37 @@ export function useProtobufService<
     tags,
     input,
   }: AsyncActionCacheCreateOptions & {
+    readonly service?: ServiceType;
     readonly input?: InstanceType<Service['methods'][Method]['I']>;
   } = {},
 ) {
   const {cache, fetch} = useAppContext().protobuf;
 
-  const action = cache.create<Service, Method>(service, method, {
-    key,
-    tags,
-    fetch,
-  });
+  const action = cache.create<Service, Service['methods'][Method]>(
+    service,
+    service.methods[method] as any as Service['methods'][Method],
+    {
+      key,
+      tags,
+      fetch,
+    },
+  );
 
-  return useAsyncAction(action, {input});
+  useAsyncAction(action, {input});
+
+  return action;
 }
 
 export class ProtobufServiceMethod<
   Service extends ServiceType,
-  Method extends string & keyof Service['methods'],
-> extends AsyncAction<
-  InstanceType<Service['methods'][Method]['O']>,
-  InstanceType<Service['methods'][Method]['I']>
-> {
-  readonly service: ServiceType;
-  readonly method: string;
+  Method extends MethodInfo,
+> extends AsyncAction<InstanceType<Method['O']>, InstanceType<Method['I']>> {
+  readonly service: Service;
+  readonly method: Method;
 
   constructor(
-    service: ServiceType,
-    method: string,
+    service: Service,
+    method: Method,
     {
       fetch,
       cached,
@@ -84,21 +88,21 @@ export class ProtobufServiceMethod<
        * An optional cached result to use for this query.
        */
       cached?: AsyncActionRunCache<
-        InstanceType<Service['methods'][Method]['O']>,
-        InstanceType<Service['methods'][Method]['I']>
+        InstanceType<Method['O']>,
+        InstanceType<Method['I']>
       >;
-    }>,
+    }> = {},
   ) {
     super((input) => fetch!(service, method, {input: input as any}) as any, {
       cached: cached && {
         ...cached,
         value:
           cached.value && cached.value instanceof Uint8Array
-            ? (service.methods[method]?.O.fromBinary(cached.value) as any)
+            ? (method.O.fromBinary(cached.value) as any)
             : cached.value,
         input:
           cached.input && cached.input instanceof Uint8Array
-            ? (service.methods[method]?.I.fromBinary(cached.input) as any)
+            ? (method.I.fromBinary(cached.input) as any)
             : cached.input,
       },
     });
@@ -115,8 +119,8 @@ export class ProtobufServiceMethod<
       input: serialized.input?.toBinary(),
       value: serialized.value?.toBinary(),
     } as any as AsyncActionRunCache<
-      InstanceType<Service['methods'][Method]['O']>,
-      InstanceType<Service['methods'][Method]['I']>
+      InstanceType<Method['O']>,
+      InstanceType<Method['I']>
     >;
   }
 }
@@ -136,14 +140,11 @@ export class ProtobufCache {
     this.#cache = new AsyncActionCache(initial);
   }
 
-  run = <
-    Service extends ServiceType,
-    Method extends string & keyof Service['methods'],
-  >(
+  run = <Service extends ServiceType, Method extends MethodInfo>(
     service: Service,
     method: Method,
     {
-      key = `${service.typeName}/${method as string}`,
+      key = `${service.typeName}/${method.name}`,
       tags,
       input,
       force,
@@ -151,7 +152,7 @@ export class ProtobufCache {
       fetch: explicitFetch,
     }: AsyncActionCacheCreateOptions & {
       readonly fetch?: ProtobufFetch;
-      readonly input?: InstanceType<Service['methods'][Method]['I']>;
+      readonly input?: InstanceType<Method['I']>;
       readonly signal?: AbortSignal;
       readonly force?: boolean;
     } = {},
@@ -170,23 +171,21 @@ export class ProtobufCache {
 
   fetch = this.run;
 
-  create = <
-    Service extends ServiceType,
-    Method extends string & keyof Service['methods'],
-  >(
+  create = <Service extends ServiceType, Method extends MethodInfo>(
     service: Service,
     method: Method,
     {
-      key = `${service.typeName}/${method as string}`,
+      key = service ? `${service.typeName}/${method.name}` : method.name,
       tags,
       fetch: explicitFetch,
       cached: explicitCached,
     }: NoInfer<
       {
+        readonly service?: ServiceType;
         readonly fetch?: ProtobufFetch;
         readonly cached?: AsyncActionRunCache<
-          InstanceType<Service['methods'][Method]['O']>,
-          InstanceType<Service['methods'][Method]['I']>
+          InstanceType<Method['O']>,
+          InstanceType<Method['I']>
         >;
       } & AsyncActionCacheCreateOptions
     > = {},
